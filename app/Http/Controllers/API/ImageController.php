@@ -18,7 +18,7 @@ class ImageController extends BaseController
      */
     public function index()
     {
-        $images = Image::paginate(5);
+        $images = Image::orderBy('id', 'DESC')->paginate(5);
 
         return $this->sendResponse($images, 'Images retrieved successfully.');
     }
@@ -43,7 +43,6 @@ class ImageController extends BaseController
     {
         $validator = Validator::make($request->all(), [
             'title' => 'required',
-            'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'description' => 'required',
         ]);
 
@@ -52,8 +51,15 @@ class ImageController extends BaseController
         }
 
         if($request->has('image')) {
-            $imageName = time().'.'.$request->image->extension();
-            $request->image->move(public_path('images'), $imageName);
+            $image_parts = explode(";base64,", $request->image);
+            $image_type_aux = explode("image/", $image_parts[0]);
+            $image_type = $image_type_aux[1];
+            $image_base64 = base64_decode($image_parts[1]);
+            $imageName = uniqid() . '.'.$image_type;
+            $file = public_path('images') . "/" . $imageName;
+
+            file_put_contents($file, $image_base64);
+
             $path = url('/images') . "/" . $imageName;
         }
 
@@ -99,7 +105,6 @@ class ImageController extends BaseController
     {
         $validator = Validator::make($request->all(), [
             'title' => 'required',
-            'image' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'description' => 'required',
         ]);
 
@@ -108,8 +113,15 @@ class ImageController extends BaseController
         }
 
         if($request->has('image')) {
-            $imageName = time().'.'.$request->image->extension();
-            $request->image->move(public_path('images'), $imageName);
+            $image_parts = explode(";base64,", $request->image);
+            $image_type_aux = explode("image/", $image_parts[0]);
+            $image_type = $image_type_aux[1];
+            $image_base64 = base64_decode($image_parts[1]);
+            $imageName = uniqid() . '.'.$image_type;
+            $file = public_path('images') . "/" . $imageName;
+
+            file_put_contents($file, $image_base64);
+
             $path = url('/images') . "/" . $imageName;
         }
 
@@ -136,7 +148,7 @@ class ImageController extends BaseController
         if (is_null($image)) {
             return $this->sendError('image not found.');
         }
-        
+
         $image->delete();
 
         return $this->sendResponse([], 'Image deleted successfully.');
@@ -150,12 +162,12 @@ class ImageController extends BaseController
      */
     public function imageSearch(Request $request)
     {
-        $image = Image::where("title", $request->title)->first();
+        $images = Image::where("title", "LIKE" , "%" . $request->title . "%")->orderBy('id', 'DESC')->paginate(5);
 
-        if (is_null($image)) {
+        if (is_null($images)) {
             return $this->sendError('image not found.');
         }
 
-        return $this->sendResponse(new ImageResource($image), 'Image retrieved successfully.');
+        return $this->sendResponse($images, 'Image retrieved successfully.');
     }
 }

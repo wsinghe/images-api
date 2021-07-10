@@ -28,17 +28,20 @@ Laravel is accessible, powerful, and provides tools required for large, robust a
 
 ## How to setup the project in local
 
-- Clone the project to local PC
-        git clone git@github.com:wsinghe/images-api.git
-- Update packages
-        composer install
+- Clone the project to local PC <br/>
+        <i>git clone git@github.com:wsinghe/images-api.git </i>
+- Update packages <br/>
+        <i>composer install </i>
 - Create database "images-api"
 - Configure database details in .env file
-- Create database tables
-        php artisan migrate
-- Clear laravel cache
-        php artisan config:clear
-        php artisan cache:clear
-        php artisan route: clear
-- Start the server
-        php artisan serve
+- Create database tables <br/>
+        <i>php artisan migrate </i>
+- Clear laravel cache <br/>
+        <i>php artisan config:clear</i> <br/>
+        <i>php artisan cache:clear </i><br/>
+        <i>php artisan route: clear</i> <br/>
+- Start the server <br/>
+        <i>php artisan serve</i>
+
+## Api documentation
+- https://documenter.getpostman.com/view/270107/Tzm6mwS3

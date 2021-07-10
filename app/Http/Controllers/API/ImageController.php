@@ -112,7 +112,7 @@ class ImageController extends BaseController
             return $this->sendError('Validation Error.', $validator->errors());
         }
 
-        if($request->has('image')) {
+        if($request->has('image') && !empty($request->image)) {
             $image_parts = explode(";base64,", $request->image);
             $image_type_aux = explode("image/", $image_parts[0]);
             $image_type = $image_type_aux[1];
